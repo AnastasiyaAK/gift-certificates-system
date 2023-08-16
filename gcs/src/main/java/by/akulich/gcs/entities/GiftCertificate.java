@@ -1,5 +1,6 @@
 package by.akulich.gcs.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -29,6 +30,7 @@ public class GiftCertificate {
     private LocalDateTime createDate;
     @Column(name="last_update_date")
     private LocalDateTime lastUpdateDate;
+    @JsonBackReference
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinTable(
             name = "giftcertificate_tag",

@@ -5,12 +5,14 @@ import by.akulich.gcs.dto.TagDto;
 import by.akulich.gcs.entities.GiftCertificate;
 import by.akulich.gcs.entities.Tag;
 import by.akulich.gcs.repositories.GiftCertificateRepository;
+import by.akulich.gcs.repositories.TagRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -18,20 +20,19 @@ import java.util.Set;
 public class GiftCertificateService {
     private final Set<GiftCertificate> giftCertificates = new HashSet<>();
     private final Set<Tag> tags = new HashSet<>();
-
     private GiftCertificateRepository giftCertificateRepository;
+    private TagRepository tagRepository;
 
     @Autowired
-    public GiftCertificateService(GiftCertificateRepository giftCertificateRepository) {
+    public GiftCertificateService(GiftCertificateRepository giftCertificateRepository, TagRepository tagRepository) {
         this.giftCertificateRepository = giftCertificateRepository;
+        this.tagRepository = tagRepository;
     }
 
     @Transactional
     public GiftCertificate addGiftCertificate(GiftCertificateDto giftCertificateDto) {
-        Optional<GiftCertificate> existingCertificate = giftCertificates.stream()
-                .filter(tag -> tag.getName().equals(giftCertificateDto.getName()))
-                .findFirst();
-        if (existingCertificate.isPresent()) {
+        GiftCertificate existingCertificate = giftCertificateRepository.findByName(giftCertificateDto.getName());
+        if (existingCertificate != null) {
             return null;
         }
 
@@ -44,20 +45,18 @@ public class GiftCertificateService {
         giftCertificate.setLastUpdateDate(LocalDateTime.now());
 
         for (TagDto tagDto : giftCertificateDto.getTags()) {
-            Optional<Tag> existingTag = tags.stream()
-                    .filter(tag -> tag.getName().equals(tagDto.getName()))
-                    .findFirst();
-            if (existingTag.isPresent()) {
-                giftCertificate.getTags().add(existingTag.get());
+            Tag existingTag = tagRepository.findByName(tagDto.getName());
+            Tag tag;
+            if (existingTag != null) {
+                tag = existingTag;
             } else {
-                Tag newTag = new Tag();
-                newTag.setName(tagDto.getName());
-                tags.add(newTag);
-                giftCertificate.getTags().add(newTag);
+                tag = new Tag();
+                tag.setName(tagDto.getName());
+                tag = tagRepository.save(tag);
             }
+            giftCertificate.getTags().add(tag);
         }
 
-        giftCertificates.add(giftCertificate);
         giftCertificateRepository.save(giftCertificate);
 
         return giftCertificate;
