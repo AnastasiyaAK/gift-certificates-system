@@ -1,9 +1,9 @@
 package by.akulich.gcs.entities;
 
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.HashSet;
@@ -15,21 +15,21 @@ import java.util.Set;
 @Setter
 public class GiftCertificate {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(name="name", length=120, nullable=false, unique=true)
+    @Column(length=120, nullable=false, unique=true)
     private String name;
-    @Column(name="name", nullable=false, unique=true)
+    @Column(nullable=false, unique=true)
     private String description;
-    @Column(name="name", nullable=false)
+    @Column(nullable=false)
     private BigDecimal price;
-    @Column(name="name", nullable=false)
+    @Column(nullable=false)
     private int duration;
     @Column(name="create_date")
     private LocalDateTime createDate;
     @Column(name="last_update_date")
     private LocalDateTime lastUpdateDate;
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinTable(
             name = "giftcertificate_tag",
             joinColumns = @JoinColumn(name = "gift_certificate_id"),

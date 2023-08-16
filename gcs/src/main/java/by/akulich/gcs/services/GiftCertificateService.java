@@ -4,18 +4,32 @@ import by.akulich.gcs.dto.GiftCertificateDto;
 import by.akulich.gcs.dto.TagDto;
 import by.akulich.gcs.entities.GiftCertificate;
 import by.akulich.gcs.entities.Tag;
+import by.akulich.gcs.repositories.GiftCertificateRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
+@Service
 public class GiftCertificateService {
     private final Set<GiftCertificate> giftCertificates = new HashSet<>();
     private final Set<Tag> tags = new HashSet<>();
+
+    private GiftCertificateRepository giftCertificateRepository;
+
+    @Autowired
+    public GiftCertificateService(GiftCertificateRepository giftCertificateRepository) {
+        this.giftCertificateRepository = giftCertificateRepository;
+    }
+
+    @Transactional
     public GiftCertificate addGiftCertificate(GiftCertificateDto giftCertificateDto) {
         Optional<GiftCertificate> existingCertificate = giftCertificates.stream()
-                .filter(cert -> cert.getName().equals(giftCertificateDto.getName()))
+                .filter(tag -> tag.getName().equals(giftCertificateDto.getName()))
                 .findFirst();
         if (existingCertificate.isPresent()) {
             return null;
@@ -44,6 +58,8 @@ public class GiftCertificateService {
         }
 
         giftCertificates.add(giftCertificate);
+        giftCertificateRepository.save(giftCertificate);
+
         return giftCertificate;
     }
 }

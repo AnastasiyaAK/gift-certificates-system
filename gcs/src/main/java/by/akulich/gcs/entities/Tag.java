@@ -1,9 +1,9 @@
 package by.akulich.gcs.entities;
 
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.*;
 import java.util.Set;
 
 @Entity
@@ -12,10 +12,10 @@ import java.util.Set;
 @Setter
 public class Tag {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(name="name", length=120, nullable=false, unique=true)
+    @Column(length=120, nullable=false, unique=true)
     private String name;
-    @ManyToMany(mappedBy = "tag_id")
+    @ManyToMany(mappedBy = "tags")
     Set<GiftCertificate> giftCertificates;
 }
