@@ -1,12 +1,12 @@
 package by.akulich.gcs.entities;
 
-import by.akulich.gcs.entities.Tag;
 import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -34,5 +34,5 @@ public class GiftCertificate {
             name = "giftcertificate_tag",
             joinColumns = @JoinColumn(name = "gift_certificate_id"),
             inverseJoinColumns = @JoinColumn(name = "tag_id"))
-    Set<Tag> tags;
+    Set<Tag> tags = new HashSet<>();
 }

@@ -34,13 +34,15 @@ public class GiftCertificateService {
                     .filter(tag -> tag.getName().equals(tagDto.getName()))
                     .findFirst();
             if (existingTag.isPresent()) {
-                break;
+                giftCertificate.getTags().add(existingTag.get());
             } else {
                 Tag newTag = new Tag();
                 newTag.setName(tagDto.getName());
                 tags.add(newTag);
+                giftCertificate.getTags().add(newTag);
             }
         }
+
         giftCertificates.add(giftCertificate);
         return giftCertificate;
     }
