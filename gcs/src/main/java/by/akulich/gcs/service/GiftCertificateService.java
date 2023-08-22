@@ -42,9 +42,8 @@ public class GiftCertificateService {
 
         for (TagDto tagDto : giftCertificateDto.getTags()) {
             Tag tag = new Tag();
+            tag.setName(tagDto.getTagName());
             if (!tagService.isTagExistByName(tagDto.getTagName())) {
-                tag = new Tag();
-                tag.setName(tagDto.getTagName());
                 tagService.saveTag(tag);
             }
             giftCertificate.getTags().add(tag);
