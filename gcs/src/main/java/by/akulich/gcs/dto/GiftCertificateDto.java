@@ -11,7 +11,7 @@ import java.util.UUID;
 @Getter
 @Setter
 public class GiftCertificateDto {
-    private UUID id;
+    private Long id;
     private String name;
     private String description;
     private BigDecimal price;

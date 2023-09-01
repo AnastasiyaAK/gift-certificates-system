@@ -32,18 +32,18 @@ public class GiftCertificateService {
             throw new GiftCertificateException("Gift certificate with name: " + existedGiftCertificate + "already exist", BAD_REQUEST);
         }
 
-        GiftCertificate giftCertificate = new GiftCertificate();
-        giftCertificate.setName(giftCertificateDto.getName());
-        giftCertificate.setDescription(giftCertificateDto.getDescription());
-        giftCertificate.setPrice(giftCertificateDto.getPrice());
-        giftCertificate.setDuration(giftCertificateDto.getDuration());
+        GiftCertificate giftCertificate = GiftCertificateMapper.INSTANCE.giftCertificateDtoToGiftCertificate(giftCertificateDto);
         giftCertificate.setCreateDate(LocalDateTime.now());
         giftCertificate.setLastUpdateDate(LocalDateTime.now());
 
         for (TagDto tagDto : giftCertificateDto.getTags()) {
-            Tag tag = new Tag();
-            tag.setName(tagDto.getTagName());
-            if (!tagService.isTagExistByName(tagDto.getTagName())) {
+            String tagName = tagDto.getTagName();
+            Tag tag;
+            if (tagService.getTagByName(tagName) != null) {
+                tag = tagService.getTagByName(tagName);
+            } else {
+                tag = new Tag();
+                tag.setName(tagName);
                 tagService.saveTag(tag);
             }
             giftCertificate.getTags().add(tag);

@@ -2,6 +2,7 @@ package by.akulich.gcs.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -13,12 +14,11 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "gift_certificates")
-@Getter
-@Setter
+@Data
 public class GiftCertificate {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private UUID id;
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
 
     @Column(length=120, nullable=false, unique=true)
     private String name;
@@ -38,11 +38,10 @@ public class GiftCertificate {
     @Column(nullable=false)
     private LocalDateTime lastUpdateDate;
 
-    @JsonBackReference // должно сработать без этого
-    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @ManyToMany
     @JoinTable(
             name = "giftcertificate_tag",
             joinColumns = @JoinColumn(name = "gift_certificate_id"),
             inverseJoinColumns = @JoinColumn(name = "tag_id"))
-    Set<Tag> tags = new HashSet<>();
+    private Set<Tag> tags = new HashSet<>();
 }

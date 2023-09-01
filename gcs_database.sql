@@ -2,7 +2,7 @@ create table if not exists gift_certificates (
     id serial primary key,
     name varchar(120) not null,
     description varchar(255),
-    price float not null,
+    price decimal(10,2) not null,
     duration int not null,
     create_date TIMESTAMP not null,
     last_update_date TIMESTAMP not null

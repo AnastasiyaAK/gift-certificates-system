@@ -5,7 +5,8 @@ import by.akulich.gcs.repository.TagRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Optional;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -13,11 +14,13 @@ import org.springframework.transaction.annotation.Transactional;
 public class TagService {
     private final TagRepository tagRepository;
 
-    public boolean isTagExistByName(String name) {
-        return tagRepository.findByName(name).isPresent();
+    public Tag getTagByName(String name) {
+        if (tagRepository.findByName(name).isPresent()) {
+            return tagRepository.findByName(name).get();
+        }
+        return null;
     }
 
-    @Transactional
     public void saveTag(Tag tag) {
         tagRepository.save(tag);
     }
