@@ -8,6 +8,8 @@ import java.util.UUID;
 @Getter
 @Setter
 public class TagDto {
+
     private Long tagId;
     private String tagName;
+
 }

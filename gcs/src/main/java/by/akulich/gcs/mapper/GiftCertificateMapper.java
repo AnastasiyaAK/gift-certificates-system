@@ -4,12 +4,9 @@ import by.akulich.gcs.dto.GiftCertificateDto;
 import by.akulich.gcs.entity.GiftCertificate;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.factory.Mappers;
 
-@Mapper
+@Mapper(componentModel = "spring")
 public interface GiftCertificateMapper {
-
-    GiftCertificateMapper INSTANCE = Mappers.getMapper(GiftCertificateMapper.class);
 
     @Mapping(target="id", source="entity.id")
     @Mapping(target="name", source="entity.name")

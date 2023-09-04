@@ -6,10 +6,8 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 
-@Mapper
+@Mapper(componentModel = "spring")
 public interface TagMapper {
-
-    TagMapper INSTANCE = Mappers.getMapper(TagMapper.class);
 
     @Mapping(target="tagId", source="entity.id")
     @Mapping(target="tagName", source="entity.name")

@@ -12,16 +12,16 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @Service
 public class TagService {
+
     private final TagRepository tagRepository;
 
-    public Tag getTagByName(String name) {
-        if (tagRepository.findByName(name).isPresent()) {
-            return tagRepository.findByName(name).get();
-        }
-        return null;
+    public Optional<Tag> getTagByName(String name) {
+        return tagRepository.findByName(name);
+
     }
 
     public void saveTag(Tag tag) {
         tagRepository.save(tag);
     }
+
 }

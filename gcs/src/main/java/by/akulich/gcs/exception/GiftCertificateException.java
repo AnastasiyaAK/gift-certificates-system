@@ -10,4 +10,5 @@ public class GiftCertificateException extends RuntimeException{
         super(message);
         this.status = status;
     }
+
 }

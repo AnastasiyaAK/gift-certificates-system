@@ -6,13 +6,19 @@ import by.akulich.gcs.entity.GiftCertificate;
 import by.akulich.gcs.entity.Tag;
 import by.akulich.gcs.exception.GiftCertificateException;
 import by.akulich.gcs.mapper.GiftCertificateMapper;
+import by.akulich.gcs.mapper.TagMapper;
 import by.akulich.gcs.repository.GiftCertificateRepository;
+import by.akulich.gcs.repository.TagRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.mapstruct.factory.Mappers;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
@@ -21,6 +27,9 @@ import static org.springframework.http.HttpStatus.BAD_REQUEST;
 @RequiredArgsConstructor
 @Service
 public class GiftCertificateService {
+
+    private final GiftCertificateMapper mapper = Mappers.getMapper(GiftCertificateMapper.class);
+    private final TagMapper mapperTag = Mappers.getMapper(TagMapper.class);
     private final GiftCertificateRepository giftCertificateRepository;
     private final TagService tagService;
 
@@ -32,25 +41,22 @@ public class GiftCertificateService {
             throw new GiftCertificateException("Gift certificate with name: " + existedGiftCertificate + "already exist", BAD_REQUEST);
         }
 
-        GiftCertificate giftCertificate = GiftCertificateMapper.INSTANCE.giftCertificateDtoToGiftCertificate(giftCertificateDto);
-        giftCertificate.setCreateDate(LocalDateTime.now());
-        giftCertificate.setLastUpdateDate(LocalDateTime.now());
 
-        for (TagDto tagDto : giftCertificateDto.getTags()) {
-            String tagName = tagDto.getTagName();
-            Tag tag;
-            if (tagService.getTagByName(tagName) != null) {
-                tag = tagService.getTagByName(tagName);
-            } else {
-                tag = new Tag();
-                tag.setName(tagName);
+        GiftCertificate giftCertificate = mapper.giftCertificateDtoToGiftCertificate(giftCertificateDto);
+        System.out.println("GIFT CERT " + giftCertificate);
+
+        for (Tag tag : giftCertificate.getTags()) {
+            String tagName = tag.getName();
+
+            if (tagService.getTagByName(tagName).isEmpty()) {
+                System.out.println("TAG" + tag);
                 tagService.saveTag(tag);
             }
-            giftCertificate.getTags().add(tag);
         }
 
         giftCertificateRepository.save(giftCertificate);
 
-        return GiftCertificateMapper.INSTANCE.giftCertificateToGiftCertificateDto(giftCertificate);
+        return mapper.giftCertificateToGiftCertificateDto(giftCertificate);
     }
+
 }

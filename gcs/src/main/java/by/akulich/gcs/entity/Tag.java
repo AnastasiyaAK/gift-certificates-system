@@ -13,6 +13,7 @@ import java.util.UUID;
 @Table(name = "tags")
 @Data
 public class Tag {
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
@@ -20,4 +21,5 @@ public class Tag {
     private String name;
     @ManyToMany(mappedBy = "tags")
     private Set<GiftCertificate> giftCertificates = new HashSet<>();
+
 }

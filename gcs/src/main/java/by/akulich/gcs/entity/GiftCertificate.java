@@ -5,17 +5,18 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 @Entity
 @Table(name = "gift_certificates")
 @Data
 public class GiftCertificate {
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
@@ -32,10 +33,12 @@ public class GiftCertificate {
     @Column(nullable=false)
     private int duration;
 
-    @Column(nullable=false)
+    @Column(nullable=false, updatable=false)
+    @CreatedDate
     private LocalDateTime createDate;
 
     @Column(nullable=false)
+    @LastModifiedDate
     private LocalDateTime lastUpdateDate;
 
     @ManyToMany
@@ -43,5 +46,7 @@ public class GiftCertificate {
             name = "giftcertificate_tag",
             joinColumns = @JoinColumn(name = "gift_certificate_id"),
             inverseJoinColumns = @JoinColumn(name = "tag_id"))
-    private Set<Tag> tags = new HashSet<>();
+    @JsonBackReference
+    private List<Tag> tags = new LinkedList<>();
+
 }
