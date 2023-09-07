@@ -8,7 +8,7 @@ import java.util.Optional;
 
 
 @Repository
-public interface GiftCertificateRepository extends JpaRepository<GiftCertificate, Long> {
+public interface GiftCertificateRepository extends JpaRepository<GiftCertificate, String> {
 
     Optional<GiftCertificate> findByName(String name);
 

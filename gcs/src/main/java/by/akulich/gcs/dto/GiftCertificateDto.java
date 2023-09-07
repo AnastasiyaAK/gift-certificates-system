@@ -1,22 +1,34 @@
 package by.akulich.gcs.dto;
 
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.util.Set;
-import java.util.UUID;
 
 @Getter
 @Setter
 public class GiftCertificateDto {
-    private Long id;
+
+    private String id;
+
+    @NotBlank(message="Name must be specified.")
     private String name;
+
+    @NotNull
+    @Max(250)
     private String description;
+
+    @NotNull
     private BigDecimal price;
+
+    @NotNull
     private int duration;
-    private LocalDateTime createDate;
-    private LocalDateTime lastUpdateDate;
+
+    @NotNull
     private Set<TagDto> tags;
+
 }

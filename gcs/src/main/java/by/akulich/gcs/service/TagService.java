@@ -17,7 +17,6 @@ public class TagService {
 
     public Optional<Tag> getTagByName(String name) {
         return tagRepository.findByName(name);
-
     }
 
     public void saveTag(Tag tag) {

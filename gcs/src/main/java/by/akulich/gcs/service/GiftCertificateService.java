@@ -1,24 +1,17 @@
 package by.akulich.gcs.service;
 
 import by.akulich.gcs.dto.GiftCertificateDto;
-import by.akulich.gcs.dto.TagDto;
 import by.akulich.gcs.entity.GiftCertificate;
 import by.akulich.gcs.entity.Tag;
 import by.akulich.gcs.exception.GiftCertificateException;
 import by.akulich.gcs.mapper.GiftCertificateMapper;
-import by.akulich.gcs.mapper.TagMapper;
 import by.akulich.gcs.repository.GiftCertificateRepository;
-import by.akulich.gcs.repository.TagRepository;
+import by.akulich.gcs.util.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.mapstruct.factory.Mappers;
-import org.springframework.data.domain.Example;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Optional;
 
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
@@ -28,35 +21,32 @@ import static org.springframework.http.HttpStatus.BAD_REQUEST;
 @Service
 public class GiftCertificateService {
 
-    private final GiftCertificateMapper mapper = Mappers.getMapper(GiftCertificateMapper.class);
-    private final TagMapper mapperTag = Mappers.getMapper(TagMapper.class);
+    private final GiftCertificateMapper mapper;
     private final GiftCertificateRepository giftCertificateRepository;
     private final TagService tagService;
 
     @Transactional
     public GiftCertificateDto addGiftCertificate(GiftCertificateDto giftCertificateDto) {
+        log.debug("Create certificate with name: {} ", giftCertificateDto.getName());
         Optional<GiftCertificate> existedGiftCertificate = giftCertificateRepository.findByName(giftCertificateDto.getName());
         if (existedGiftCertificate.isPresent()) {
             log.error("Gift certificate with name: {} already exist", existedGiftCertificate);
-            throw new GiftCertificateException("Gift certificate with name: " + existedGiftCertificate + "already exist", BAD_REQUEST);
+            throw new GiftCertificateException("Gift certificate with name: " + existedGiftCertificate + "already exist", BAD_REQUEST, ErrorCode.GIFT_CERTIFICATE_ALREADY_EXIST);
         }
 
-
-        GiftCertificate giftCertificate = mapper.giftCertificateDtoToGiftCertificate(giftCertificateDto);
-        System.out.println("GIFT CERT " + giftCertificate);
+        GiftCertificate giftCertificate = mapper.toGiftCertificate(giftCertificateDto);
 
         for (Tag tag : giftCertificate.getTags()) {
             String tagName = tag.getName();
-
             if (tagService.getTagByName(tagName).isEmpty()) {
-                System.out.println("TAG" + tag);
+                log.debug("Save tag with name {}", tagName);
                 tagService.saveTag(tag);
             }
         }
 
         giftCertificateRepository.save(giftCertificate);
 
-        return mapper.giftCertificateToGiftCertificateDto(giftCertificate);
+        return mapper.toGiftCertificateDto(giftCertificate);
     }
 
 }

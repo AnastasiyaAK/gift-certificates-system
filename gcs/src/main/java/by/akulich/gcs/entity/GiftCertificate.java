@@ -1,30 +1,33 @@
 package by.akulich.gcs.entity;
-
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Max;
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
+import org.hibernate.annotations.GenericGenerator;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.*;
 
 @Entity
+@EntityListeners(AuditingEntityListener.class)
 @Table(name = "gift_certificates")
 @Data
 public class GiftCertificate {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+    @GeneratedValue(generator = "uuid")
+    @GenericGenerator(name = "uuid", strategy = "uuid")
+    @Column(columnDefinition = "CHAR(32)")
+    private String id;
 
     @Column(length=120, nullable=false, unique=true)
     private String name;
 
     @Column(nullable=false, unique=true)
+    @Max(250)
     private String description;
 
     @Column(nullable=false)
@@ -33,12 +36,12 @@ public class GiftCertificate {
     @Column(nullable=false)
     private int duration;
 
-    @Column(nullable=false, updatable=false)
     @CreatedDate
+    @Column(nullable=false, updatable=false)
     private LocalDateTime createDate;
 
-    @Column(nullable=false)
     @LastModifiedDate
+    @Column(nullable=false)
     private LocalDateTime lastUpdateDate;
 
     @ManyToMany
@@ -46,7 +49,6 @@ public class GiftCertificate {
             name = "giftcertificate_tag",
             joinColumns = @JoinColumn(name = "gift_certificate_id"),
             inverseJoinColumns = @JoinColumn(name = "tag_id"))
-    @JsonBackReference
-    private List<Tag> tags = new LinkedList<>();
+    private Set<Tag> tags = new HashSet<>();
 
 }

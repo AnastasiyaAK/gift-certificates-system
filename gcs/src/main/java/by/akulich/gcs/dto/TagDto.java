@@ -1,15 +1,16 @@
 package by.akulich.gcs.dto;
 
+import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
-
-import java.util.UUID;
 
 @Getter
 @Setter
 public class TagDto {
 
-    private Long tagId;
-    private String tagName;
+    private String id;
+
+    @NotBlank(message="Name must be specified.")
+    private String name;
 
 }
