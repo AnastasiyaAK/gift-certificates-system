@@ -1,14 +1,19 @@
 package by.akulich.gcs.exception;
 
+import lombok.Data;
 import org.springframework.http.HttpStatus;
 
-public class GiftCertificateException extends RuntimeException{
+@Data
+public class BaseException extends RuntimeException{
 
-    private final HttpStatus status;
+    private final HttpStatus httpStatus;
 
-    public GiftCertificateException(String message, HttpStatus status) {
+    private final String errorCode;
+
+    public BaseException(String message, HttpStatus httpStatus, String errorCode) {
         super(message);
-        this.status = status;
+        this.httpStatus = httpStatus;
+        this.errorCode = errorCode;
     }
 
 }

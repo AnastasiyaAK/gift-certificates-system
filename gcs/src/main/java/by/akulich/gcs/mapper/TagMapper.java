@@ -9,12 +9,8 @@ import org.mapstruct.factory.Mappers;
 @Mapper(componentModel = "spring")
 public interface TagMapper {
 
-    @Mapping(target="tagId", source="entity.id")
-    @Mapping(target="tagName", source="entity.name")
-    TagDto tagToTagDto(Tag entity);
+    TagDto toTagDto(Tag entity);
 
-    @Mapping(target="id", source="dto.tagId")
-    @Mapping(target="name", source="dto.tagName")
-    Tag tagDtoToTag(TagDto dto);
+    Tag toTag(TagDto dto);
 
 }
